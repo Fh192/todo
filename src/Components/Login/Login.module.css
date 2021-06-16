@@ -1,0 +1,95 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.title {
+  display: flex;
+  justify-content: flex-start;
+  padding-bottom: 20px;
+  font-size: 20px;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.email,
+.password {
+  flex: 1;
+  background-color: transparent;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 0 0 20px 0;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  padding-top: 5px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.row label {
+  padding-left: 10px;
+}
+
+.row label,
+.row input {
+  cursor: pointer;
+}
+
+.error {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ff0033;
+  padding: 0 5px 0 5px;
+  background-color: #274fc7;
+}
+
+.submitBtn {
+  transition: all 0.2s ease;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #2148c0;
+  cursor: pointer;
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.3);
+}
+
+.submitBtn:active {
+  transform: scale(0.99);
+  box-shadow: none;
+}
+
+.useTempAcc {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  margin: 10px 0;
+  text-shadow: -1.85429px 2.78143px 0.927143px rgba(0, 0, 0, 0.1);
+}
