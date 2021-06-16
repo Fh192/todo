@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  width: 100%;
 }
 
 .title {
@@ -17,11 +16,17 @@
 .login form {
   display: flex;
   flex-direction: column;
-  min-width: 300px;
+  width: 300px;
+}
+
+.login input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px #274fc7 inset;
+  -webkit-text-fill-color: #fff;
 }
 
 .email,
-.password {
+.password,
+.captchaField {
   flex: 1;
   background-color: transparent;
   border: 1px solid #fff;
@@ -63,6 +68,17 @@
   color: #ff0033;
   padding: 0 5px 0 5px;
   background-color: #274fc7;
+}
+
+.captcha {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.captcha img {
+  width: 100%;
+  padding-bottom: 10px;
 }
 
 .submitBtn {

@@ -2,6 +2,7 @@ import React from 'react';
 import css from './Login.module.css';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { LoginFormData } from '../../types/authTypes';
 
 const LoginValidateSchema = Yup.object().shape({
   email: Yup.string().email('Incorrect email').required('Field is required'),
@@ -12,9 +13,16 @@ interface LoginFormValues {
   email: string;
   password: string;
   rememberMe: boolean;
+  captcha: string;
 }
 
-const Login: React.FC = () => {
+interface Props {
+  login: (loginData: LoginFormData) => void;
+  captchaURL: string;
+  error: string;
+}
+
+const Login: React.FC<Props> = props => {
   return (
     <div className={css.login}>
       <Formik
@@ -22,11 +30,14 @@ const Login: React.FC = () => {
           email: '',
           password: '',
           rememberMe: false,
+          captcha: '',
         }}
         validationSchema={LoginValidateSchema}
-        onSubmit={(values: LoginFormValues) => {
-          console.log(values);
+        onSubmit={(values: LoginFormValues, actions) => {
+          props.login(values);
+          actions.setFieldValue('captcha', '');
         }}
+        validateOnMount={true}
       >
         {({ errors, touched, setFieldValue, setTouched }) => (
           <Form>
@@ -34,9 +45,9 @@ const Login: React.FC = () => {
               <span>Login</span>
             </div>
             <div className={css.inner}>
-              {errors.email && touched.email ? (
+              {(errors.email && touched.email) || props.error ? (
                 <label htmlFor='password' className={css.error}>
-                  {errors.email}
+                  {errors.email || props.error}
                 </label>
               ) : null}
               <Field
@@ -49,9 +60,9 @@ const Login: React.FC = () => {
             </div>
 
             <div className={css.inner}>
-              {errors.password && touched.password ? (
+              {(errors.password && touched.password) || props.error ? (
                 <label htmlFor='email' className={css.error}>
-                  {errors.password}
+                  {errors.password || props.error}
                 </label>
               ) : null}
 
@@ -73,6 +84,21 @@ const Login: React.FC = () => {
               />
               <label htmlFor='rememberMe'>Remember me</label>
             </div>
+            {props.captchaURL ? (
+              <div className={css.captcha}>
+                <div>
+                  <img src={props.captchaURL} alt='captcha' />
+                </div>
+
+                <Field
+                  type='text'
+                  name='captcha'
+                  id='captcha'
+                  placeholder='Enter captcha'
+                  className={css.captchaField}
+                />
+              </div>
+            ) : null}
 
             <button type='submit' className={css.submitBtn}>
               LOGIN
