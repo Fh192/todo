@@ -2,7 +2,7 @@ import { RootState } from './../../../../weather-forecast/src/store/store';
 import { ThunkAction } from 'redux-thunk';
 import { Action } from '../store';
 import * as actions from '../actions/authActions';
-import { auth } from '../../api/auth';
+import auth from '../../api/auth';
 import { LoginFormData } from '../../types/authTypes';
 
 const initialState = {

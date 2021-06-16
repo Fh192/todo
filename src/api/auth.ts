@@ -6,7 +6,7 @@ import {
 } from './../types/authTypes';
 import instance from './instance';
 
-export const auth = {
+const auth = {
   me: async () => {
     const response = await instance.get<AuthResponse>('auth/me');
     return response.data;
@@ -30,3 +30,5 @@ export const auth = {
     return response.data.url;
   },
 };
+
+export default auth;
