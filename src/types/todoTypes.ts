@@ -1,7 +1,7 @@
-export interface TodoList {
+export interface ITodoList {
   id: string;
   addedDate: string;
-  order: number | null;
+  order: number;
   title: string;
 }
 
@@ -22,13 +22,13 @@ export interface Task {
   description: string;
   title: string;
   completed: boolean;
-  status: number | null;
-  priority: number | null;
+  status: number;
+  priority: number;
   startDate: string;
   deadline: string;
   id: string;
   todoListId: string;
-  order: number | null;
+  order: number;
   addedDate: string;
 }
 

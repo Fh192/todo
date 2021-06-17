@@ -3,13 +3,13 @@ import {
   PostTodoListResponse,
   TaskData,
   TasksPortionResponse,
-  TodoList,
+  ITodoList,
 } from '../types/todoTypes';
 import instance from './instance';
 
 const todo = {
   getTodoLists: async () => {
-    const response = await instance.get<Array<TodoList>>('todo-lists');
+    const response = await instance.get<Array<ITodoList>>('todo-lists');
 
     return response.data;
   },

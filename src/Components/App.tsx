@@ -1,26 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Route } from 'react-router';
 import { connect } from 'react-redux';
 import { RootState } from '../store/store';
 import './App.css';
 import LoginContainer from './Login/LoginContainer';
-import TodoListContainer from './TodoList/TodoListContainer';
- 
+import TodoLists from './TodoLists/TodoLists';
+import Sidebar from './Sidebar/Sidebar';
+import CreateTodoList from './CreateTodoList/CreateTodoList';
+import { getTodoLists } from '../store/reducers/todoReducer';
 
 interface MapStateProps {
   isAuthorize: boolean;
 }
 
-type Props = MapStateProps;
+interface MapDispatchProps {
+  getTodoLists: () => void;
+}
 
-const App: React.FC<Props> = ({ isAuthorize }) => {
+type Props = MapStateProps & MapDispatchProps;
+
+const App: React.FC<Props> = ({ isAuthorize, getTodoLists }) => {
+  useEffect(() => getTodoLists(), []);
+  
   return (
     <div className='App'>
       {!isAuthorize ? (
         <LoginContainer />
       ) : (
         <>
-          
-          <TodoListContainer />
+          <Sidebar />
+          <Route path='/todo-lists' component={() => <TodoLists />} />
+          <Route path='/create-todo' component={() => <CreateTodoList />} />
         </>
       )}
     </div>
@@ -31,4 +41,4 @@ const mapStateToProps = (state: RootState): MapStateProps => ({
   isAuthorize: state.auth.isAuthorize,
 });
 
-export default connect(mapStateToProps, {})(App);
+export default connect(mapStateToProps, { getTodoLists })(App);

@@ -1,0 +1,25 @@
+.todoList {
+  border: 1px solid #fff;
+  padding: 10px;
+  margin: 10px;
+}
+
+.header {
+  display: flex;
+}
+
+.addedDate {
+  display: flex;
+}
+
+.addedDate div {
+  padding-right: 10px;
+}
+
+.title {
+  padding-right: 10px;
+}
+
+.deleteTodoList {
+  border: 1px solid #fff;
+}

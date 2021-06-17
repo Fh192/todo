@@ -1,0 +1,45 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100px;
+  padding: 20px;
+  background-color: #15202b;
+}
+
+.addTodoList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.addTodoList span {
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+.addTodoList img {
+  width: 50px;
+  cursor: pointer;
+  padding-bottom: 15px;
+  transition: all 0.2s ease;
+}
+
+.addTodoList img:hover {
+  width: 55px;
+  padding-bottom: 10px;
+}
+
+.logout svg {
+  width: 25px;
+  cursor: pointer;
+}
+
+.logout path {
+  transition: all 0.2s ease;
+}
+
+.logout:hover path {
+  fill: #ff0033;
+}

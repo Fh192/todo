@@ -18,6 +18,8 @@ input {
   font-size: 16px;
   font-weight: 400;
   color: #fff;
+  background: transparent;
+  border: none;
 }
 
 input::placeholder {
@@ -26,4 +28,12 @@ input::placeholder {
   font-size: 16px;
   color: #fff;
   font-weight: 300;
+}
+
+input {
+  background-color: transparent;
+  padding: 10px;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 20px;
 }
