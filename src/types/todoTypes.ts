@@ -34,13 +34,12 @@ export interface Task {
 
 export interface TasksPortionResponse {
   items: Array<Task>;
-  Items: Task;
   totalCount: number;
   error: string;
 }
 
 export interface TaskResponse {
-  data: Task;
+  data: Array<Task>;
   resultCode: number;
   messages: Array<string>;
 }

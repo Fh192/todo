@@ -7,6 +7,8 @@ import { ITodoList } from '../../types/todoTypes';
 import {
   deleteTodoList,
   updateTodoListTitle,
+  addNewTask,
+  getTodoListTasks,
 } from '../../store/reducers/todoReducer';
 
 interface MapStateProps {
@@ -16,6 +18,8 @@ interface MapStateProps {
 interface MapDispatchProps {
   deleteTodoList: (todoListId: string) => void;
   updateTodoListTitle: (todoListId: string, title: string) => void;
+  addNewTask: (todoListId: string, title: string) => void;
+  getTodoListTasks: (todoListId: string) => void;
 }
 
 type Props = MapStateProps & MapDispatchProps;
@@ -32,6 +36,8 @@ const TodoLists: React.FC<Props> = props => {
             title={todoList.title}
             deleteTodoList={props.deleteTodoList}
             updateTodoListTitle={props.updateTodoListTitle}
+            addNewTask={props.addNewTask}
+            getTodoListTasks={props.getTodoListTasks}
             key={todoList.id}
           />
         );
@@ -47,4 +53,6 @@ const mapStateToProps = (state: RootState) => ({
 export default connect(mapStateToProps, {
   deleteTodoList,
   updateTodoListTitle,
+  addNewTask,
+  getTodoListTasks,
 })(TodoLists);

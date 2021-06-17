@@ -16,8 +16,8 @@ const todo = {
 
   getTodoListTasks: async (
     todoListId: string,
-    pageSize: number,
-    pageNumber: number
+    pageSize: number = 10,
+    pageNumber: number = 1
   ) => {
     const response = await instance.get<TasksPortionResponse>(
       `/todo-lists/${todoListId}/tasks?count=${pageSize}&page=${pageNumber}`

@@ -28,6 +28,12 @@ const todoReducer = (state = initialState, action: TodoAction): TodoState => {
         todoLists: [action.payload, ...state.todoLists],
       };
 
+    case 'actions/todoActions/SET_TODO_LIST_TASK':
+      return {
+        ...state,
+        tasks: [...state.tasks, ...action.payload],
+      };
+
     default:
       return state;
   }
@@ -44,7 +50,7 @@ export const getTodoLists = (): TodoThunk => async dispatch => {
 };
 
 export const getTodoListTasks =
-  (todoListId: string, pageSize: number, pageNumber: number): TodoThunk =>
+  (todoListId: string, pageSize?: number, pageNumber?: number): TodoThunk =>
   async dispatch => {
     try {
       const data = await todo.getTodoListTasks(
@@ -53,9 +59,9 @@ export const getTodoListTasks =
         pageNumber
       );
 
-      const task = data.Items;
+      const tasks = data.items;
 
-      dispatch(actions.setTodoListTask(task));
+      dispatch(actions.setTodoListTasks(tasks));
     } catch (e) {
       console.log(e.message);
     }
@@ -92,6 +98,24 @@ export const updateTodoListTitle =
     try {
       await todo.updateTodoListTitle(todoListId, title);
       dispatch(getTodoLists());
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+export const addNewTask =
+  (todoListId: string, title: string): TodoThunk =>
+  async dispatch => {
+    try {
+      const data = await todo.createNewTask(todoListId, title);
+      const tasks = data.data;
+
+      if (data.resultCode === 0) {
+        dispatch(actions.setTodoListTasks(tasks));
+        dispatch(getTodoListTasks(todoListId));
+      } else {
+        throw new Error(data.messages[0]);
+      }
     } catch (e) {
       console.log(e.message);
     }
