@@ -86,4 +86,15 @@ export const deleteTodoList =
     }
   };
 
+export const updateTodoListTitle =
+  (todoListId: string, title: string): TodoThunk =>
+  async dispatch => {
+    try {
+      await todo.updateTodoListTitle(todoListId, title);
+      dispatch(getTodoLists());
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
 export default todoReducer;

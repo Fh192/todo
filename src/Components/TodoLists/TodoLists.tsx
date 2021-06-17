@@ -4,7 +4,10 @@ import TodoList from './TodoList/TodoList';
 import { connect } from 'react-redux';
 import { RootState } from '../../store/store';
 import { ITodoList } from '../../types/todoTypes';
-import { deleteTodoList } from '../../store/reducers/todoReducer';
+import {
+  deleteTodoList,
+  updateTodoListTitle,
+} from '../../store/reducers/todoReducer';
 
 interface MapStateProps {
   todoLists: Array<ITodoList>;
@@ -12,6 +15,7 @@ interface MapStateProps {
 
 interface MapDispatchProps {
   deleteTodoList: (todoListId: string) => void;
+  updateTodoListTitle: (todoListId: string, title: string) => void;
 }
 
 type Props = MapStateProps & MapDispatchProps;
@@ -27,6 +31,7 @@ const TodoLists: React.FC<Props> = props => {
             order={todoList.order}
             title={todoList.title}
             deleteTodoList={props.deleteTodoList}
+            updateTodoListTitle={props.updateTodoListTitle}
             key={todoList.id}
           />
         );
@@ -39,4 +44,7 @@ const mapStateToProps = (state: RootState) => ({
   todoLists: state.todo.todoLists,
 });
 
-export default connect(mapStateToProps, { deleteTodoList })(TodoLists);
+export default connect(mapStateToProps, {
+  deleteTodoList,
+  updateTodoListTitle,
+})(TodoLists);
