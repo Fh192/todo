@@ -8,13 +8,13 @@ import {
 import instance from './instance';
 
 const todo = {
-  getTodoList: async () => {
-    const response = await instance.get<TodoList>('todo-lists');
+  getTodoLists: async () => {
+    const response = await instance.get<Array<TodoList>>('todo-lists');
 
     return response.data;
   },
 
-  getTasksPortion: async (
+  getTodoListTasks: async (
     todoListId: string,
     pageSize: number,
     pageNumber: number

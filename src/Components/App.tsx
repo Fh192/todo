@@ -4,6 +4,7 @@ import { RootState } from '../store/store';
 import './App.css';
 import LoginContainer from './Login/LoginContainer';
 import TodoListContainer from './TodoList/TodoListContainer';
+ 
 
 interface MapStateProps {
   isAuthorize: boolean;
@@ -14,7 +15,14 @@ type Props = MapStateProps;
 const App: React.FC<Props> = ({ isAuthorize }) => {
   return (
     <div className='App'>
-      {!isAuthorize ? <LoginContainer /> : <TodoListContainer />}
+      {!isAuthorize ? (
+        <LoginContainer />
+      ) : (
+        <>
+          
+          <TodoListContainer />
+        </>
+      )}
     </div>
   );
 };

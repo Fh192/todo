@@ -1,4 +1,6 @@
 .App {
+  display: flex;
+  flex-direction: row;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-size: 16px;
