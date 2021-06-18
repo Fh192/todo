@@ -2,14 +2,14 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, RootState } from '../store';
 import todo from '../../api/todo';
 import * as actions from '../actions/todoActions';
-import { Task, ITodoList } from '../../types/todoTypes';
+import { ITask, ITodoList } from '../../types/todoTypes';
 
 type TodoAction = ReturnType<Action<typeof actions>>;
 type TodoThunk = ThunkAction<Promise<void>, RootState, unknown, TodoAction>;
 
 interface TodoState {
   todoLists: Array<ITodoList>;
-  tasks: Array<Task>;
+  tasks: Array<ITask>;
 }
 
 const initialState: TodoState = {
@@ -28,11 +28,15 @@ const todoReducer = (state = initialState, action: TodoAction): TodoState => {
         todoLists: [action.payload, ...state.todoLists],
       };
 
-    case 'actions/todoActions/SET_TODO_LIST_TASK':
+    case 'actions/todoActions/SET_TODO_LIST_TASKS':
       return {
         ...state,
-        tasks: [...state.tasks, ...action.payload],
+        tasks: action.payload,
       };
+
+    case 'actions/todoActions/ADD_NEW_TASK':
+      debugger;
+      return { ...state, tasks: [action.payload, ...state.tasks] };
 
     default:
       return state;
@@ -43,7 +47,7 @@ export const getTodoLists = (): TodoThunk => async dispatch => {
   try {
     const todoLists = await todo.getTodoLists();
 
-    dispatch(actions.setTodos(todoLists));
+    dispatch(actions.setTodoLists(todoLists));
   } catch (e) {
     console.log(e.messages);
   }
@@ -108,10 +112,11 @@ export const addNewTask =
   async dispatch => {
     try {
       const data = await todo.createNewTask(todoListId, title);
-      const tasks = data.data;
+      const task = data.data.item;
 
       if (data.resultCode === 0) {
-        dispatch(actions.setTodoListTasks(tasks));
+        debugger;
+        dispatch(actions.addNewTask(task));
         dispatch(getTodoListTasks(todoListId));
       } else {
         throw new Error(data.messages[0]);

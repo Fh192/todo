@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import css from './TodoList.module.css';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
+import Task from './Task/Task';
+import { ITask } from '../../../types/todoTypes';
 
 interface Props {
   id: string;
   addedDate: string;
   order: number | null;
   title: string;
+  tasks: Array<ITask>;
 
   deleteTodoList: (todoListId: string) => void;
   updateTodoListTitle: (todoListId: string, title: string) => void;
@@ -122,6 +125,16 @@ const TodoList: React.FC<Props> = props => {
           {taskEditMode ? <AddNewTask /> : <button>Add Task</button>}
         </div>
       </header>
+      <div className={css.tasks}>
+        {props.tasks.map(task => {
+          debugger;
+          if (task.todoListId === props.id) {
+            return <Task {...task} key={task.id} />;
+          } else {
+            return null;
+          }
+        })}
+      </div>
     </div>
   );
 };

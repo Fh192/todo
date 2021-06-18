@@ -5,20 +5,7 @@ export interface ITodoList {
   title: string;
 }
 
-export interface PostTodoListResponse {
-  resultCode: number;
-  messages: Array<string>;
-  data: {
-    item: {
-      id: string;
-      title: string;
-      addedDate: string;
-      order: number;
-    };
-  };
-}
-
-export interface Task {
+export interface ITask {
   description: string;
   title: string;
   completed: boolean;
@@ -32,19 +19,33 @@ export interface Task {
   addedDate: string;
 }
 
-export interface TasksPortionResponse {
-  items: Array<Task>;
+export interface PostTodoListResponse {
+  resultCode: number;
+  messages: Array<string>;
+  data: {
+    item: ITodoList;
+  };
+}
+
+export interface GetTasksResponse {
+  items: Array<ITask>;
   totalCount: number;
   error: string;
 }
 
 export interface TaskResponse {
-  data: Array<Task>;
+  data: { item: ITask };
   resultCode: number;
   messages: Array<string>;
 }
 
-export interface TaskData {
+export interface TasksResponse {
+  data: Array<ITask>;
+  resultCode: number;
+  messages: Array<string>;
+}
+
+export interface TaskFormData {
   title: string;
   description: string;
   completed: boolean;

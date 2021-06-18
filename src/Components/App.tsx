@@ -21,7 +21,7 @@ type Props = MapStateProps & MapDispatchProps;
 
 const App: React.FC<Props> = ({ isAuthorize, getTodoLists }) => {
   useEffect(() => getTodoLists(), []);
-  
+
   return (
     <div className='App'>
       {!isAuthorize ? (
@@ -29,7 +29,7 @@ const App: React.FC<Props> = ({ isAuthorize, getTodoLists }) => {
       ) : (
         <>
           <Sidebar />
-          <Route path='/todo-lists' component={() => <TodoLists />} />
+          <Route path='/' component={() => <TodoLists />} />
           <Route path='/create-todo' component={() => <CreateTodoList />} />
         </>
       )}

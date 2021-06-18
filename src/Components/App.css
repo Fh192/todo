@@ -7,7 +7,7 @@
   font-weight: 400;
   color: #fff;
   background-color: #274fc7;
-  height: 100vh;
+  min-height: 100vh;
   min-width: 100vw;
 }
 

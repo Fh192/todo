@@ -3,7 +3,7 @@ import css from './TodoLists.module.css';
 import TodoList from './TodoList/TodoList';
 import { connect } from 'react-redux';
 import { RootState } from '../../store/store';
-import { ITodoList } from '../../types/todoTypes';
+import { ITodoList, ITask } from '../../types/todoTypes';
 import {
   deleteTodoList,
   updateTodoListTitle,
@@ -13,6 +13,7 @@ import {
 
 interface MapStateProps {
   todoLists: Array<ITodoList>;
+  tasks: Array<ITask>;
 }
 
 interface MapDispatchProps {
@@ -34,6 +35,7 @@ const TodoLists: React.FC<Props> = props => {
             addedDate={todoList.addedDate}
             order={todoList.order}
             title={todoList.title}
+            tasks={props.tasks}
             deleteTodoList={props.deleteTodoList}
             updateTodoListTitle={props.updateTodoListTitle}
             addNewTask={props.addNewTask}
@@ -48,6 +50,7 @@ const TodoLists: React.FC<Props> = props => {
 
 const mapStateToProps = (state: RootState) => ({
   todoLists: state.todo.todoLists,
+  tasks: state.todo.tasks,
 });
 
 export default connect(mapStateToProps, {
