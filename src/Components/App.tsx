@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
-import { Route } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { RootState } from '../store/store';
-import './App.css';
+import css from './App.module.css';
 import LoginContainer from './Login/LoginContainer';
-import TodoLists from './TodoLists/TodoLists';
-import Sidebar from './Sidebar/Sidebar';
-import CreateTodoList from './CreateTodoList/CreateTodoList';
+import TodoList from './TodoList/TodoList';
+import Header from './Header/Header';
 import { getTodoLists } from '../store/reducers/todoReducer';
+import { ITodoList } from '../types/todoTypes';
 
 interface MapStateProps {
   isAuthorize: boolean;
+  todoLists: Array<ITodoList>;
 }
 
 interface MapDispatchProps {
@@ -19,18 +20,27 @@ interface MapDispatchProps {
 
 type Props = MapStateProps & MapDispatchProps;
 
-const App: React.FC<Props> = ({ isAuthorize, getTodoLists }) => {
+const App: React.FC<Props> = ({ isAuthorize, getTodoLists, todoLists }) => {
   useEffect(() => getTodoLists(), []);
 
   return (
-    <div className='App'>
+    <div className={css.App}>
       {!isAuthorize ? (
         <LoginContainer />
       ) : (
         <>
-          <Sidebar />
-          <Route path='/' component={() => <TodoLists />} />
-          <Route path='/create-todo' component={() => <CreateTodoList />} />
+          <Header />
+          <Switch>
+            {todoLists.length !== 0 && (
+              <Redirect from='/' exact to={`/todo-list/${todoLists[0].id}`} />
+            )}
+
+            <Route
+              path='/todo-list/:todoListId'
+              component={() => <TodoList />}
+            />
+            <Route path='*' component={() => <div></div>} />
+          </Switch>
         </>
       )}
     </div>
@@ -39,6 +49,7 @@ const App: React.FC<Props> = ({ isAuthorize, getTodoLists }) => {
 
 const mapStateToProps = (state: RootState): MapStateProps => ({
   isAuthorize: state.auth.isAuthorize,
+  todoLists: state.todo.todoLists,
 });
 
 export default connect(mapStateToProps, { getTodoLists })(App);

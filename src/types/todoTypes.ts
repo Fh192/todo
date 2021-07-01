@@ -12,7 +12,7 @@ export interface ITask {
   status: number;
   priority: number;
   startDate: string;
-  deadline: string;
+  deadline: string | null;
   id: string;
   todoListId: string;
   order: number;

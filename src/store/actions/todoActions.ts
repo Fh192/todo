@@ -8,10 +8,10 @@ const ADD_NEW_TASK = 'actions/todoActions/ADD_NEW_TASK';
 export const setTodoLists = (todoLists: Array<ITodoList>) =>
   ({ type: SET_TODO_LISTS, payload: todoLists } as const);
 
-export const setTodoListTasks = (tasks: Array<ITask>) =>
+export const setTodoListTasks = (tasks: Array<ITask>, tasksCount: number) =>
   ({
     type: SET_TODO_LIST_TASKS,
-    payload: tasks,
+    payload: { tasks, tasksCount },
   } as const);
 
 export const addNewTodoList = (todoList: ITodoList) =>

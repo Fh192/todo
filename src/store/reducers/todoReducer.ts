@@ -2,7 +2,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, RootState } from '../store';
 import todo from '../../api/todo';
 import * as actions from '../actions/todoActions';
-import { ITask, ITodoList } from '../../types/todoTypes';
+import { ITask, ITodoList, TaskFormData } from '../../types/todoTypes';
 
 type TodoAction = ReturnType<Action<typeof actions>>;
 type TodoThunk = ThunkAction<Promise<void>, RootState, unknown, TodoAction>;
@@ -10,11 +10,13 @@ type TodoThunk = ThunkAction<Promise<void>, RootState, unknown, TodoAction>;
 interface TodoState {
   todoLists: Array<ITodoList>;
   tasks: Array<ITask>;
+  tasksCount: number;
 }
 
 const initialState: TodoState = {
   todoLists: [],
   tasks: [],
+  tasksCount: 0,
 };
 
 const todoReducer = (state = initialState, action: TodoAction): TodoState => {
@@ -31,11 +33,11 @@ const todoReducer = (state = initialState, action: TodoAction): TodoState => {
     case 'actions/todoActions/SET_TODO_LIST_TASKS':
       return {
         ...state,
-        tasks: action.payload,
+        tasks: action.payload.tasks,
+        tasksCount: action.payload.tasksCount,
       };
 
     case 'actions/todoActions/ADD_NEW_TASK':
-      debugger;
       return { ...state, tasks: [action.payload, ...state.tasks] };
 
     default:
@@ -64,8 +66,9 @@ export const getTodoListTasks =
       );
 
       const tasks = data.items;
+      const tasksCount = data.totalCount;
 
-      dispatch(actions.setTodoListTasks(tasks));
+      dispatch(actions.setTodoListTasks(tasks, tasksCount));
     } catch (e) {
       console.log(e.message);
     }
@@ -115,7 +118,6 @@ export const addNewTask =
       const task = data.data.item;
 
       if (data.resultCode === 0) {
-        debugger;
         dispatch(actions.addNewTask(task));
         dispatch(getTodoListTasks(todoListId));
       } else {
@@ -124,6 +126,37 @@ export const addNewTask =
     } catch (e) {
       console.log(e.message);
     }
+  };
+
+export const updateTask =
+  (todoListId: string, taskId: string, taskFormData: TaskFormData): TodoThunk =>
+  async dispatch => {
+    try {
+      await todo.updateTask(todoListId, taskId, taskFormData);
+      dispatch(getTodoListTasks(todoListId));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+export const reorderTask =
+  (todoListId: string, taskId: string, putAfterItemId: string): TodoThunk =>
+  async dispatch => {
+    try {
+      await todo.reorderTask(todoListId, taskId, putAfterItemId);
+
+      dispatch(getTodoListTasks(todoListId));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+export const deleteTask =
+  (todoListId: string, taskId: string): TodoThunk =>
+  async dispatch => {
+    await todo.deleteTask(todoListId, taskId);
+
+    dispatch(getTodoListTasks(todoListId));
   };
 
 export default todoReducer;
