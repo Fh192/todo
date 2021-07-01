@@ -32,14 +32,10 @@ const App: React.FC<Props> = ({ isAuthorize, getTodoLists, todoLists }) => {
           <Header />
           <Switch>
             {todoLists.length !== 0 && (
-              <Redirect from='/' exact to={`/todo-list/${todoLists[0].id}`} />
+              <Redirect from='/todo' exact to={`/todo/${todoLists[0].id}`} />
             )}
 
-            <Route
-              path='/todo-list/:todoListId'
-              component={() => <TodoList />}
-            />
-            <Route path='*' component={() => <div></div>} />
+            <Route path='/todo/:todoListId' component={() => <TodoList />} />
           </Switch>
         </>
       )}
