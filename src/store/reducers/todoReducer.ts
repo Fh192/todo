@@ -1,3 +1,4 @@
+import { createReducer } from '@reduxjs/toolkit';
 import { ThunkAction } from 'redux-thunk';
 import { Action, RootState } from '../store';
 import todo from '../../api/todo';
@@ -19,143 +20,93 @@ const initialState: TodoState = {
   tasksCount: 0,
 };
 
-const todoReducer = (state = initialState, action: TodoAction): TodoState => {
-  switch (action.type) {
-    case 'actions/todoActions/SET_TODO_LISTS':
-      return { ...state, todoLists: action.payload };
+const todoReducer = createReducer(initialState, b => {
+  b.addCase(actions.setTodoLists, (state, action) => {
+    state.todoLists = action.payload.todoLists;
+  });
 
-    case 'actions/todoActions/ADD_NEW_TODO_LIST':
-      return {
-        ...state,
-        todoLists: [action.payload, ...state.todoLists],
-      };
+  b.addCase(actions.addNewTodoList, (state, action) => {
+    state.todoLists.push(action.payload);
+  });
 
-    case 'actions/todoActions/SET_TODO_LIST_TASKS':
-      return {
-        ...state,
-        tasks: action.payload.tasks,
-        tasksCount: action.payload.tasksCount,
-      };
+  b.addCase(actions.setTodoListTasks, (state, action) => {
+    state.tasks = action.payload.tasks;
+    state.tasksCount = action.payload.tasksCount;
+  });
 
-    case 'actions/todoActions/ADD_NEW_TASK':
-      return { ...state, tasks: [action.payload, ...state.tasks] };
-
-    default:
-      return state;
-  }
-};
+  b.addCase(actions.addNewTask, (state, action) => {
+    state.tasks.unshift(action.payload);
+  });
+});
 
 export const getTodoLists = (): TodoThunk => async dispatch => {
-  try {
-    const todoLists = await todo.getTodoLists();
-
-    dispatch(actions.setTodoLists(todoLists));
-  } catch (e) {
-    console.log(e.messages);
-  }
+  const todoLists = await todo.getTodoLists();
+  dispatch(actions.setTodoLists(todoLists));
 };
 
 export const getTodoListTasks =
   (todoListId: string, pageSize?: number, pageNumber?: number): TodoThunk =>
   async dispatch => {
-    try {
-      const data = await todo.getTodoListTasks(
-        todoListId,
-        pageSize,
-        pageNumber
-      );
+    const data = await todo.getTodoListTasks(todoListId, pageSize, pageNumber);
+    const tasks = data.items;
+    const tasksCount = data.totalCount;
 
-      const tasks = data.items;
-      const tasksCount = data.totalCount;
-
-      dispatch(actions.setTodoListTasks(tasks, tasksCount));
-    } catch (e) {
-      console.log(e.message);
-    }
+    dispatch(actions.setTodoListTasks(tasks, tasksCount));
   };
 
 export const addNewTodoList =
   (title: string): TodoThunk =>
   async dispatch => {
-    try {
-      const data = await todo.createNewTodoList(title);
+    const data = await todo.createNewTodoList(title);
+    const todoList = data.data.item;
 
-      const todoList = data.data.item;
-
-      dispatch(actions.addNewTodoList(todoList));
-    } catch (e) {
-      console.log(e.message);
-    }
+    dispatch(actions.addNewTodoList(todoList));
   };
 
 export const deleteTodoList =
   (todoListId: string): TodoThunk =>
   async dispatch => {
-    try {
-      await todo.deleteTodoList(todoListId);
-      dispatch(getTodoLists());
-    } catch (e) {
-      console.log(e.message);
-    }
+    await todo.deleteTodoList(todoListId);
+    dispatch(getTodoLists());
   };
 
 export const updateTodoListTitle =
   (todoListId: string, title: string): TodoThunk =>
   async dispatch => {
-    try {
-      await todo.updateTodoListTitle(todoListId, title);
-      dispatch(getTodoLists());
-    } catch (e) {
-      console.log(e.message);
-    }
+    await todo.updateTodoListTitle(todoListId, title);
+    dispatch(getTodoLists());
   };
 
 export const addNewTask =
   (todoListId: string, title: string): TodoThunk =>
   async dispatch => {
-    try {
-      const data = await todo.createNewTask(todoListId, title);
-      const task = data.data.item;
+    const data = await todo.createNewTask(todoListId, title);
+    const task = data.data.item;
 
-      if (data.resultCode === 0) {
-        dispatch(actions.addNewTask(task));
-        dispatch(getTodoListTasks(todoListId));
-      } else {
-        throw new Error(data.messages[0]);
-      }
-    } catch (e) {
-      console.log(e.message);
+    if (data.resultCode === 0) {
+      dispatch(actions.addNewTask(task));
+      dispatch(getTodoListTasks(todoListId));
     }
   };
 
 export const updateTask =
   (todoListId: string, taskId: string, taskFormData: TaskFormData): TodoThunk =>
   async dispatch => {
-    try {
-      await todo.updateTask(todoListId, taskId, taskFormData);
-      dispatch(getTodoListTasks(todoListId));
-    } catch (e) {
-      console.log(e);
-    }
+    await todo.updateTask(todoListId, taskId, taskFormData);
+    dispatch(getTodoListTasks(todoListId));
   };
 
 export const reorderTask =
   (todoListId: string, taskId: string, putAfterItemId: string): TodoThunk =>
   async dispatch => {
-    try {
-      await todo.reorderTask(todoListId, taskId, putAfterItemId);
-
-      dispatch(getTodoListTasks(todoListId));
-    } catch (e) {
-      console.log(e);
-    }
+    await todo.reorderTask(todoListId, taskId, putAfterItemId);
+    dispatch(getTodoListTasks(todoListId));
   };
 
 export const deleteTask =
   (todoListId: string, taskId: string): TodoThunk =>
   async dispatch => {
     await todo.deleteTask(todoListId, taskId);
-
     dispatch(getTodoListTasks(todoListId));
   };
 

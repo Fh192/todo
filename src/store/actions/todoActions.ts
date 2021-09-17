@@ -1,21 +1,20 @@
+import { createAction } from '@reduxjs/toolkit';
 import { ITask, ITodoList } from '../../types/todoTypes';
 
-const SET_TODO_LISTS = 'actions/todoActions/SET_TODO_LISTS';
-const SET_TODO_LIST_TASKS = 'actions/todoActions/SET_TODO_LIST_TASKS';
-const ADD_NEW_TODO_LIST = 'actions/todoActions/ADD_NEW_TODO_LIST';
-const ADD_NEW_TASK = 'actions/todoActions/ADD_NEW_TASK';
+export const setTodoLists = createAction(
+  'todoActions/SET_TODO_LISTS',
+  (todoLists: Array<ITodoList>) => ({ payload: { todoLists } })
+);
 
-export const setTodoLists = (todoLists: Array<ITodoList>) =>
-  ({ type: SET_TODO_LISTS, payload: todoLists } as const);
-
-export const setTodoListTasks = (tasks: Array<ITask>, tasksCount: number) =>
-  ({
-    type: SET_TODO_LIST_TASKS,
+export const setTodoListTasks = createAction(
+  'todoActions/SET_TODO_LIST_TASKS',
+  (tasks: Array<ITask>, tasksCount: number) => ({
     payload: { tasks, tasksCount },
-  } as const);
+  })
+);
 
-export const addNewTodoList = (todoList: ITodoList) =>
-  ({ type: ADD_NEW_TODO_LIST, payload: todoList } as const);
+export const addNewTodoList = createAction<ITodoList>(
+  'todoActions/ADD_NEW_TODO_LIST'
+);
 
-export const addNewTask = (task: ITask) =>
-  ({ type: ADD_NEW_TASK, payload: task } as const);
+export const addNewTask = createAction<ITask>('todoActions/ADD_NEW_TASK');
