@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import css from './Login.module.css';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -22,6 +22,7 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
 
   const captchaURL = useSelector((s: RootState) => s.auth.captchaURL);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   return (
     <div className={css.login}>
@@ -34,6 +35,7 @@ const Login: React.FC = () => {
         }}
         validationSchema={LoginValidateSchema}
         onSubmit={(values: LoginFormValues, actions) => {
+          setBtnDisabled(true);
           dispatch(login(values));
           actions.setFieldValue('captcha', '');
         }}
@@ -100,7 +102,11 @@ const Login: React.FC = () => {
               </div>
             ) : null}
 
-            <button type='submit' className={css.submitBtn}>
+            <button
+              type='submit'
+              className={css.submitBtn}
+              disabled={btnDisabled}
+            >
               LOGIN
             </button>
 
