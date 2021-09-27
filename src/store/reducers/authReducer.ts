@@ -88,6 +88,8 @@ export const login =
   };
 
 export const logout = (): AuthThunk => async dispatch => {
+  dispatch(actions.toggleAuthFetching(true));
+
   const data = await auth.logout();
 
   if (data.resultCode === 0) {
@@ -95,6 +97,8 @@ export const logout = (): AuthThunk => async dispatch => {
   } else {
     dispatch(loginError(data.messages.join('')));
   }
+
+  dispatch(actions.toggleAuthFetching(false));
 };
 
 export default authReducer;
