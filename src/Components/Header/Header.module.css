@@ -1,112 +1,174 @@
 .header {
-  position: fixed;
-  width: 250px;
+  max-width: 250px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-@media (max-width: 1300px) {
-  .header {
-    position: unset;
-    height: unset;
-  }
+  gap: 30px;
+  padding: 15px 20px;
+  border-top: 10px solid rgba(0, 0, 0, 0.1);
+  background-color: #59b4d1;
 }
 
 .title {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  padding: 5px 0;
-  margin-bottom: 20px;
-}
-
-.title span:nth-child(1) {
+  gap: 10px;
   font-size: 20px;
+  font-weight: bold;
 }
 
-.list {
+.title span:nth-child(2) {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.createTodo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid rgb(255, 255, 255);
+  padding: 10px 10px;
+}
+
+.createIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.createTodo input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.createTodo input {
+  overflow: hidden;
+  flex: 1;
+  padding: 0;
+  outline: none;
+  font-size: 16px;
+}
+
+.todoLists {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .todo {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  cursor: pointer;
-  padding: 10px;
-  margin-bottom: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
+  justify-content: space-between;
+  gap: 10px;
+  background: #ffffff;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  color: #000;
+  padding: 5px 10px;
+  cursor: grab;
+  transition: background 0.3s ease;
 }
 
-.todo a {
-  text-decoration: none;
-  width: 90%;
+.activeTodo {
+  color: #59b4d1;
 }
 
 .todoTitle {
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
-  color: #fff;
-  max-width: 80%;
+  white-space: nowrap;
+  font-size: 20px;
+  line-height: 25px;
 }
 
-.deleteTodo {
-  cursor: pointer;
+.spinCreateIcon {
+  transition: 0.2s ease;
+  animation: spinIcon 1s ease 0s;
 }
 
-.createNewTodoList {
+@keyframes spinIcon {
+  0% {
+    transform: rotateZ(0);
+  }
+  100% {
+    transform: rotateZ(180deg);
+  }
+}
+
+.top {
   display: flex;
-  cursor: pointer;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  margin-top: 30px;
+  flex-direction: column;
+  gap: 50px;
 }
 
-.createNewTodoList button {
+.bottom {
   display: flex;
   align-items: center;
-  padding: 0;
+  justify-content: space-between;
+  gap: 30px;
 }
 
-.createNewTodoList button span {
-  padding-left: 5px;
+.user span {
+  font-size: 20px;
 }
 
-.createNewTodoList form {
-  flex: 1;
-}
-
-.formTitle {
-  width: 100%;
-  outline: none;
-  border-bottom: 1px solid #000;
-  padding: 0;
-  padding-bottom: 5px;
-}
-
-.logout {
+.logoutIcon {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  margin-bottom: 10%;
-}
-
-.logout button {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border-radius: 50%;
-  /* background-color: rgba(255, 0, 0, 0.1); */
+}
+
+.logoutIcon svg:hover {
+  transition: all 0.2s ease;
+  transform: scale(1.2);
+  fill: red;
   cursor: pointer;
 }
 
-.logout svg {
-  fill: red;
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+@media screen and (max-width: 800px) {
+  .header {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .header {
+    width: 200px;
+    position: absolute;
+    left: -240px;
+  }
+}
+
+.openHeader {
+  background: #59b4d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  cursor: pointer;
+  animation: a 2s ease 0s infinite alternate;
+}
+
+.cursorNoDrop {
+  cursor: no-drop;
+}
+
+@keyframes a {
+  0% {
+    background: #59b4d1;
+  }
+  100% {
+    background: rgba(87, 180, 209, 0.3);
+  }
 }

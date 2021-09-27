@@ -8,7 +8,6 @@ export interface ITodoList {
 export interface ITask {
   description: string;
   title: string;
-  completed: boolean;
   status: number;
   priority: number;
   startDate: string;
@@ -43,14 +42,4 @@ export interface TasksResponse {
   data: Array<ITask>;
   resultCode: number;
   messages: Array<string>;
-}
-
-export interface TaskFormData {
-  title: string;
-  description: string;
-  completed: boolean;
-  status: number;
-  priority: number;
-  startDate: string;
-  deadline: string;
 }

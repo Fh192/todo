@@ -1,34 +1,45 @@
-.taskWrapper {
-  transition: all 1s ease;
-}
-
-.taskWrapper:hover {
-  transform: rotateX(180deg);
-}
-
 .task {
+  min-height: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin: 5px 0;
-  transition: all 1s ease;
+  gap: 10px;
+  padding: 5px 10px;
+  color: #000;
+  background: #ffffff;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  cursor: grab;
+  transition: background 0.3s ease;
 }
 
-.task:hover {
-  transform: rotateX(-180deg);
+.block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
 }
 
-.deleteTask {
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.completed input {
   cursor: pointer;
 }
 
-.deadlineInput {
-  max-height: 16px;
-  outline: none;
-  color: #000;
-  font-size: 16px;
-  padding: 0;
-  margin-left: 10px;
+.deleteTask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.preloader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

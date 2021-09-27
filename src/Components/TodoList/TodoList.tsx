@@ -1,158 +1,191 @@
 import React, { useEffect, useState } from 'react';
 import css from './TodoList.module.css';
 import Task from '../Task/Task';
-import { Formik, Form, Field } from 'formik';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { RouteComponentProps } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router';
 import { RootState } from '../../store/store';
-import { ITask, ITodoList } from '../../types/todoTypes';
-import { getTodoListTasks, addNewTask } from '../../store/reducers/todoReducer';
-import NoData from '../SVG/NoData';
-import * as Yup from 'yup';
-
-const CreateTaskValidationSchema = Yup.object().shape({
-  title: Yup.string().max(100, 'Max length is 100 symbols'),
-});
-
-interface withRouterProps {
-  todoListId: string;
-}
-
-interface MapStateProps {
-  todoLists: Array<ITodoList>;
-  tasks: Array<ITask>;
-  tasksCount: number;
-}
-
-interface MapDispatchProps {
-  getTodoListTasks: (
-    todoListId: string,
-    pageSize?: number,
-    pageNumber?: number
-  ) => void;
-  addNewTask: (todoListId: string, title: string) => void;
-}
-
-type Props = MapStateProps &
-  MapDispatchProps &
-  RouteComponentProps<withRouterProps>;
-
-const TodoList: React.FC<Props> = ({
-  todoLists,
-  tasks,
-  tasksCount,
+import {
   getTodoListTasks,
-  ...props
-}) => {
-  useEffect(
-    () => getTodoListTasks(props.match.params.todoListId),
-    [props.match.params.todoListId]
+  addNewTask,
+  updateTask,
+} from '../../store/reducers/todoReducer';
+import { ITask } from '../../types/todoTypes';
+import Preloader from '../Preloader/Preloader';
+
+type Props = RouteComponentProps<{ todoListId: string }>;
+
+const TodoList: React.FC<Props> = props => {
+  const dispatch = useDispatch();
+
+  const { tasks, tasksCount, tasksFetching } = useSelector(
+    (s: RootState) => s.todo
   );
 
-  const [createTaskMode, setCreateTaskMode] = useState<boolean>(false);
-  const [pageSize, setPageSize] = useState(10);
+  const todoListId = props.match.params.todoListId;
+  const completedTasks = tasks.filter(task => task.status === 1);
+  const inProgressTasks = tasks.filter(task => task.status === 0);
 
-  const todoList = todoLists.find(
-    todoList => todoList.id === props.match.params.todoListId
-  );
+  const [taskTitle, setTaskTitle] = useState('');
+  const [currentTask, setCurrentTask] = useState<ITask | null>(null);
+  const [taskError, setTaskError] = useState<
+    'Title is required' | `Max title length is 100 symbols` | null
+  >(null);
+
+  const onTaskCreate = () => {
+    if (taskTitle) {
+      if (taskTitle.length > 100) {
+        setTaskError(`Max title length is 100 symbols`);
+      } else {
+        dispatch(addNewTask(todoListId, taskTitle));
+        setTaskTitle('');
+      }
+    } else {
+      setTaskError('Title is required');
+    }
+  };
+
+  const onDropOnBoard = (e: React.DragEvent<HTMLDivElement>, status: 0 | 1) => {
+    e.preventDefault();
+
+    if (currentTask) {
+      if (currentTask.status !== status) {
+        dispatch(
+          updateTask(todoListId, currentTask.id, {
+            ...currentTask,
+            status: status,
+          })
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getTodoListTasks(todoListId));
+  }, [todoListId, dispatch]);
+
+  useEffect(() => {
+    if (taskError) {
+      if (taskError === 'Title is required' && taskTitle.length > 0) {
+        setTaskError(null);
+      } else if (
+        taskError === 'Max title length is 100 symbols' &&
+        taskTitle.length <= 100
+      ) {
+        setTaskError(null);
+      }
+    }
+  }, [taskError, taskTitle]);
 
   return (
-    <div className={css.todoListWrapper}>
-      <div className={css.todoList}>
-        <header className={css.header}>
-          <div className={css.title}>{todoList?.title}</div>
-          <div className={css.addDate}>{todoList?.addedDate.split('T')[0]}</div>
-        </header>
-        <div className={css.content}>
-          <div className={css.createTask}>
-            {createTaskMode ? (
-              <>
-                <Formik
-                  initialValues={{ title: '' }}
-                  onSubmit={(values: { title: string }) => {
-                    //@ts-ignore
-                    props.addNewTask(todoList?.id, values.title);
-                    setCreateTaskMode(false);
-                  }}
-                  validationSchema={CreateTaskValidationSchema}
-                >
-                  {({ errors, touched }) => (
-                    <Form>
-                      <div className={css.inner}>
-                        <Field
-                          name='title'
-                          placeholder='Task title...'
-                          autoFocus
-                        />
-                        {errors.title && (
-                          <div className={css.error}>{errors.title}</div>
-                        )}
-                      </div>
-
-                      <button
-                        className={`${css.button} ${errors.title && css.error}`}
-                        disabled={!!errors.title}
-                        type='submit'
-                      >
-                        Create
-                      </button>
-                    </Form>
-                  )}
-                </Formik>
-              </>
-            ) : (
-              <button
-                className={css.button}
-                onClick={() => setCreateTaskMode(true)}
-              >
-                Create new task
-              </button>
-            )}
-          </div>
-          <div className={css.tasks}>
-            {tasks.length !== 0 ? (
-              tasks
-                .sort((a, b) => (a.order > b.order ? 1 : -1))
-                .map(task => <Task key={task.id} task={task} />)
-            ) : (
-              <div className={css.noTasks}>
-                <span className={css.noTasksText}>No tasks yet</span>
-                <NoData size='100px' />
-              </div>
-            )}
-            <div
-              className={css.loadMore}
-              onClick={() => {
-                if (pageSize < tasksCount) {
-                  setPageSize(pageSize => pageSize + 10);
-                  //@ts-ignore
-                  getTodoListTasks(todoList?.id, pageSize + 10);
-                } else {
-                  setPageSize(10);
-                  //@ts-ignore
-                  getTodoListTasks(todoList?.id, 10);
-                }
-              }}
-            >
-              {tasksCount > 10 && (
-                <button>{pageSize < tasksCount ? `Load more` : `Hide`}</button>
-              )}
+    <div className={css.todoList}>
+      <div
+        className={css.inProgress}
+        onDragOver={e => {
+          e.preventDefault();
+        }}
+        onDrop={e => {
+          onDropOnBoard(e, 0);
+        }}
+      >
+        <div className={css.inProgressTitle}>
+          <span>💻 In Progress</span>
+        </div>
+        <div className={css.createTask}>
+          <span
+            className={css.createTaskIcon}
+            onClick={onTaskCreate}
+            title='Create task'
+          >
+            📝
+          </span>
+          {taskError && (
+            <div className={css.taskError}>
+              <span>{taskError}</span>
             </div>
-            {console.log(pageSize, tasksCount, tasksCount)}
-          </div>
+          )}
+
+          <input
+            type='text'
+            placeholder='Add task'
+            value={taskTitle}
+            onChange={e => setTaskTitle(e.currentTarget.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') onTaskCreate();
+            }}
+            onBlur={() => setTaskError(null)}
+          />
+        </div>
+        <div className={css.tasks}>
+          {tasksFetching ? (
+            <div className={css.preloader}>
+              <Preloader size='35px' color='#fff' />
+            </div>
+          ) : (
+            <>
+              {inProgressTasks.length > 0 ? (
+                inProgressTasks.map(task => (
+                  <Task
+                    currentTask={currentTask}
+                    setCurrentTask={setCurrentTask}
+                    task={task}
+                    tasks={tasks}
+                    key={task.id}
+                  />
+                ))
+              ) : (
+                <div className={css.noTasks}>
+                  {tasksCount && completedTasks.length === tasksCount ? (
+                    <span>All tasks completed 🎉</span>
+                  ) : (
+                    <span>No tasks yet</span>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      <div
+        className={css.completed}
+        onDragOver={e => {
+          e.preventDefault();
+        }}
+        onDrop={e => {
+          onDropOnBoard(e, 1);
+        }}
+      >
+        <div className={css.completedTitle}>
+          <span>🚀 Done</span>
+        </div>
+        <div className={css.tasks}>
+          {tasksFetching ? (
+            <div className={css.preloader}>
+              <Preloader size='35px' color='#fff' />
+            </div>
+          ) : (
+            <>
+              {completedTasks.length > 0 ? (
+                completedTasks.map(task => (
+                  <Task
+                    currentTask={currentTask}
+                    setCurrentTask={setCurrentTask}
+                    task={task}
+                    tasks={tasks}
+                    key={task.id}
+                  />
+                ))
+              ) : (
+                <div className={css.noTasks}>
+                  <span>No completed tasks yet</span>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  tasks: state.todo.tasks,
-  tasksCount: state.todo.tasksCount,
-  todoLists: state.todo.todoLists,
-});
-
-export default withRouter(
-  connect(mapStateToProps, { getTodoListTasks, addNewTask })(TodoList)
-);
+export default withRouter(TodoList);

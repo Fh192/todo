@@ -20,6 +20,7 @@ const initialState = {
   isAuthorize: false as boolean,
   captchaURL: '' as string,
   error: '' as string,
+  authFetching: true as boolean,
 };
 
 export type AuthActions = ReturnType<Action<typeof actions>>;
@@ -47,11 +48,17 @@ const authReducer = createReducer(initialState, b => {
   b.addCase(loginError, (state, action) => {
     state.error = action.payload;
   });
+
+  b.addCase(actions.toggleAuthFetching, (state, action) => {
+    state.authFetching = action.payload;
+  });
 });
 
 type AuthThunk = ThunkAction<Promise<void>, RootState, unknown, AuthActions>;
 
 export const getAuthData = (): AuthThunk => async dispatch => {
+  dispatch(actions.toggleAuthFetching(true));
+
   const data = await auth.me();
 
   if (data.resultCode === 0) {
@@ -59,6 +66,8 @@ export const getAuthData = (): AuthThunk => async dispatch => {
   } else {
     dispatch(actions.setAuthDataError(data.messages.join('')));
   }
+
+  dispatch(actions.toggleAuthFetching(false));
 };
 
 export const login =

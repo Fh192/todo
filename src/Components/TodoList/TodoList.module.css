@@ -1,80 +1,97 @@
-.todoListWrapper {
+.todoList {
   width: 100%;
-  display: flex;
+  padding: 50px;
+  display: grid;
+  align-content: center;
   justify-content: center;
-  align-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(245px, 400px));
+  grid-template-rows: fit-content;
+  gap: 50px;
 }
 
-.todoList {
+.inProgress,
+.completed,
+.createTask {
+  height: fit-content;
   display: flex;
   flex-direction: column;
-  color: #000;
-  background-color: #fff;
-  border-radius: 10px;
-  width: 700px;
-  min-height: 100px;
-  margin: 20px;
-  transition: width 1s ease;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  border-top: 5px solid #0000001a;
+  min-width: 200px;
 }
 
-.header {
+.completed span {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #000;
+  gap: 10px;
 }
 
-.title {
-  max-width: 80%;
-  font-size: 20px;
+.inProgressTitle,
+.completedTitle {
+  font-weight: bold;
+  line-height: 22px;
+  letter-spacing: -0.02em;
+  color: #ffffff;
 }
 
-.addDate {
-  font-weight: 300;
-  font-size: 15px;
+.inProgress {
+  background: #945ad1;
 }
 
 .createTask {
+  position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  padding-top: 20px;
+  justify-content: flex-start;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: none;
+  padding: 5px;
+  margin-bottom: 5px;
 }
 
-.button {
-  padding: 10px 15px;
-  background-color: #274fc7;
-  color: #fff;
-  border: 1px solid #000000;
+.createTaskIcon {
   cursor: pointer;
 }
 
-.button:active {
-  transform: scale(0.9);
-}
-
-.error {
-  background-color: #f44336;
-}
-
-.createTask form {
-  display: flex;
-  align-items: flex-end;
-}
-
 .createTask input {
-  border-bottom: 1px solid #000;
-  color: #000;
-}
-
-.createTask input:focus {
-  border-bottom: 1px solid #000;
-  outline: none;
+  flex: 1;
+  font-size: 16px;
 }
 
 .createTask input::placeholder {
-  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.createTask input:focus::placeholder {
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.taskError {
+  position: absolute;
+  top: -13px;
+  right: 10px;
+  font-size: 14px;
+
+  color: rgb(255, 35, 35);
+}
+
+.completed {
+  background: #59d090;
+}
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .noTasks {
@@ -82,48 +99,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  font-weight: 300;
-  padding: 20px;
+  gap: 20px;
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
 }
 
-.noTasksText {
-  padding-bottom: 20px;
+.noTasks svg {
+  width: 35px;
+  height: 35px;
+  fill: rgba(54, 54, 54, 0.9);
 }
 
-.tasks {
-  perspective: 500px;
-  padding: 20px 50px;
-}
-
-.loadMore {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loadMore button {
-  margin-top: 10px;
-  border: 1px solid #000;
-  padding: 10px 15px;
-  background-color: #274fc7;
-  cursor: pointer;
-}
-
-@media (max-width: 1035px) {
+@media screen and (max-width: 800px) {
   .todoList {
-    width: 500px;
+    padding: 10px;
   }
 }
 
-@media (max-width: 835px) {
-  .todoList {
-    width: 400px;
-  }
-}
-
-@media (max-width: 767) {
-  .todoList {
-    max-width: none;
-  }
+.preloader svg {
+  fill: #fff;
 }

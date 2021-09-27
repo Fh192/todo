@@ -6,33 +6,19 @@
   font-size: 16px;
   font-weight: 400;
   color: #fff;
-  background-color: #274fc7;
+  background: #e3e9ee;
   min-height: 100vh;
 }
 
-button,
-input {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-size: 16px;
-  font-weight: 400;
-  color: #fff;
-  background: transparent;
-  border: none;
+.preloader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-input::placeholder {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-size: 16px;
-  color: #fff;
-  font-weight: 300;
-}
-
-input {
-  background-color: transparent;
-  padding: 10px;
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 20px;
+@media screen and (max-width: 800px) {
+  .App {
+    overflow-x: hidden;
+  }
 }

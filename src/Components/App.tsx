@@ -1,51 +1,71 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import css from './App.module.css';
-import LoginContainer from './Login/LoginContainer';
 import TodoList from './TodoList/TodoList';
 import Header from './Header/Header';
 import { getTodoLists } from '../store/reducers/todoReducer';
-import { ITodoList } from '../types/todoTypes';
+import Login from './Login/Login';
+import Preloader from './Preloader/Preloader';
+import { getAuthData } from '../store/reducers/authReducer';
 
-interface MapStateProps {
-  isAuthorize: boolean;
-  todoLists: Array<ITodoList>;
-}
+const App: React.FC = () => {
+  const dispatch = useDispatch();
 
-interface MapDispatchProps {
-  getTodoLists: () => void;
-}
+  const isAuthorize = useSelector((s: RootState) => s.auth.isAuthorize);
+  const todoLists = useSelector((s: RootState) => s.todo.todoLists);
+  const todoListsFetching = useSelector(
+    (s: RootState) => s.todo.todoListsFetching
+  );
+  const authFetching = useSelector((s: RootState) => s.auth.authFetching);
 
-type Props = MapStateProps & MapDispatchProps;
+  useEffect(() => {
+    dispatch(getAuthData());
+  }, [dispatch]);
 
-const App: React.FC<Props> = ({ isAuthorize, getTodoLists, todoLists }) => {
-  useEffect(() => getTodoLists(), []);
+  useEffect(() => {
+    if (isAuthorize) {
+      dispatch(getTodoLists());
+    }
+  }, [isAuthorize, dispatch]);
 
   return (
     <div className={css.App}>
-      {!isAuthorize ? (
-        <LoginContainer />
+      {authFetching ? (
+        <div className={css.preloader}>
+          <Preloader size='50px' />
+        </div>
       ) : (
         <>
-          <Header />
-          <Switch>
-            {todoLists.length !== 0 && (
-              <Redirect from='/todo' exact to={`/todo/${todoLists[0].id}`} />
-            )}
+          {!isAuthorize ? (
+            <Login />
+          ) : (
+            <>
+              {todoListsFetching ? (
+                <div className={css.preloader}>
+                  <Preloader size='50px' />
+                </div>
+              ) : (
+                <>
+                  <Header />
+                  <Switch>
+                    <Route exact path='/'>
+                      {todoLists.length > 0 && (
+                        <Redirect to={`/${todoLists[0].id}`} />
+                      )}
+                    </Route>
 
-            <Route path='/todo/:todoListId' component={() => <TodoList />} />
-          </Switch>
+                    <Route path='/:todoListId' component={TodoList} />
+                  </Switch>
+                </>
+              )}
+            </>
+          )}
         </>
       )}
     </div>
   );
 };
 
-const mapStateToProps = (state: RootState): MapStateProps => ({
-  isAuthorize: state.auth.isAuthorize,
-  todoLists: state.todo.todoLists,
-});
-
-export default connect(mapStateToProps, { getTodoLists })(App);
+export default App;

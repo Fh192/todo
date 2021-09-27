@@ -14,3 +14,7 @@ export const setCaptcha = createAction<string>('authActions/SET_CAPTCHA');
 export const logoutSuccess = createAction('authActions/LOGOUT_SUCCESS');
 
 export const loginError = createAction<string>('authActions/LOGIN_ERROR');
+
+export const toggleAuthFetching = createAction<boolean>(
+  'authActions/TOGGLE_AUTH_FETCHING'
+);

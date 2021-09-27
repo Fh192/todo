@@ -1,0 +1,11 @@
+.deleteIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.deleteIcon:hover {
+  transform: rotateZ(20deg);
+}

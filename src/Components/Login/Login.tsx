@@ -2,7 +2,9 @@ import React from 'react';
 import css from './Login.module.css';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { LoginFormData } from '../../types/authTypes';
+import { RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../store/reducers/authReducer';
 
 const LoginValidateSchema = Yup.object().shape({
   email: Yup.string().email('Incorrect email').required('Field is required'),
@@ -16,13 +18,11 @@ interface LoginFormValues {
   captcha: string;
 }
 
-interface Props {
-  login: (loginData: LoginFormData) => void;
-  captchaURL: string;
-  error: string;
-}
+const Login: React.FC = () => {
+  const dispatch = useDispatch();
 
-const Login: React.FC<Props> = props => {
+  const captchaURL = useSelector((s: RootState) => s.auth.captchaURL);
+
   return (
     <div className={css.login}>
       <Formik
@@ -34,7 +34,7 @@ const Login: React.FC<Props> = props => {
         }}
         validationSchema={LoginValidateSchema}
         onSubmit={(values: LoginFormValues, actions) => {
-          props.login(values);
+          dispatch(login(values));
           actions.setFieldValue('captcha', '');
         }}
         validateOnMount={true}
@@ -45,9 +45,9 @@ const Login: React.FC<Props> = props => {
               <span>Login</span>
             </div>
             <div className={css.inner}>
-              {(errors.email && touched.email) || props.error ? (
+              {errors.email && touched.email ? (
                 <label htmlFor='password' className={css.error}>
-                  {errors.email || props.error}
+                  {errors.email}
                 </label>
               ) : null}
               <Field
@@ -60,9 +60,9 @@ const Login: React.FC<Props> = props => {
             </div>
 
             <div className={css.inner}>
-              {(errors.password && touched.password) || props.error ? (
+              {errors.password && touched.password ? (
                 <label htmlFor='email' className={css.error}>
-                  {errors.password || props.error}
+                  {errors.password}
                 </label>
               ) : null}
 
@@ -84,10 +84,10 @@ const Login: React.FC<Props> = props => {
               />
               <label htmlFor='rememberMe'>Remember me</label>
             </div>
-            {props.captchaURL ? (
+            {captchaURL ? (
               <div className={css.captcha}>
                 <div>
-                  <img src={props.captchaURL} alt='captcha' />
+                  <img src={captchaURL} alt='captcha' />
                 </div>
 
                 <Field

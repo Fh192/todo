@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { ITask, TaskFormData } from '../../types/todoTypes';
+import { useDispatch } from 'react-redux';
+import { ITask } from '../../types/todoTypes';
 import css from './Task.module.css';
 import {
   reorderTask,
@@ -9,99 +9,97 @@ import {
 } from '../../store/reducers/todoReducer';
 import DeleteIcon from '../SVG/DeleteIcon';
 
-interface MapDispatchProps {
-  reorderTask: (
-    todoListId: string,
-    taskId: string,
-    putAfterItemId: string
-  ) => void;
-  deleteTask: (todoListId: string, taskId: string) => void;
-  updateTask: (
-    todoListId: string,
-    taskId: string,
-    taskFormData: TaskFormData
-  ) => void;
-}
-
-interface OwnProps {
+interface Props {
   task: ITask;
+  tasks: Array<ITask>;
+  currentTask: ITask | null;
+  setCurrentTask: React.Dispatch<React.SetStateAction<ITask | null>>;
 }
 
-type Props = OwnProps & MapDispatchProps;
+const Task: React.FC<Props> = ({
+  task,
+  tasks,
+  currentTask,
+  setCurrentTask,
+}) => {
+  const dispatch = useDispatch();
 
-const Task: React.FC<Props> = props => {
-  const task = props.task;
+  const { todoListId, id, status, title } = task;
+  const [isCompleted, setIsCompleted] = useState(status === 1 ? true : false);
 
-  const [flipped, setFlipped] = useState(false);
-  const [deadline, setDeadline] = useState<string>(props.task.deadline || '');
+  const onTaskRemove = () => {
+    dispatch(deleteTask(todoListId, id));
+  };
+
+  const onCompletedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.currentTarget.checked;
+    const status = checked ? 1 : 0;
+
+    dispatch(updateTask(todoListId, id, { ...task, status }));
+    setIsCompleted(checked);
+  };
+
+  const dragStartHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    setCurrentTask(task);
+  };
+  const dragLeaveHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.style.background = '#fff';
+  };
+
+  const dragOverHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.75)';
+  };
+
+  const dropHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.style.background = '#fff';
+
+    if (currentTask) {
+      const currentTaskIndex = tasks.findIndex(t => t.id === currentTask.id);
+      const taskIndex = tasks.findIndex(t => t.id === id);
+
+      if (currentTask.id !== id) {
+        if (taskIndex === 0) {
+          dispatch(reorderTask(todoListId, currentTask.id, null));
+        } else {
+          if (currentTaskIndex > taskIndex) {
+            dispatch(reorderTask(todoListId, id, currentTask.id));
+          } else {
+            dispatch(reorderTask(todoListId, currentTask.id, id));
+          }
+        }
+      }
+    }
+  };
 
   return (
-    <div className={css.taskWrapper}>
-      <div
-        className={css.task}
-        onMouseEnter={() => setFlipped(true)}
-        onMouseLeave={() => setFlipped(false)}
-      >
-        {flipped ? (
-          <>
-            <div className={css.deadline}>
-              <span>Deadline:</span>
-              {props.task.deadline ? (
-                <>
-                  <input
-                    className={css.deadlineInput}
-                    type='date'
-                    placeholder='Set deadline'
-                    value={deadline.split('T')[0]}
-                    onChange={e => {
-                      setDeadline(e.target.value);
+    <div
+      className={css.task}
+      draggable={true}
+      onDragStart={dragStartHandler}
+      onDragLeave={dragLeaveHandler}
+      onDragOver={dragOverHandler}
+      onDrop={dropHandler}
+    >
+      <div className={css.block}>
+        <div className={css.completed}>
+          <input
+            type='checkbox'
+            checked={isCompleted}
+            onChange={onCompletedChange}
+          />
+        </div>
+        <div className={css.title} title={title}>
+          <span>{title}</span>
+        </div>
+      </div>
 
-                      props.updateTask(props.task.todoListId, props.task.id, {
-                        ...props.task,
-                        deadline: e.target.value,
-                      });
-                    }}
-                  />
-                </>
-              ) : (
-                <>
-                  <input
-                    className={css.deadlineInput}
-                    type='date'
-                    placeholder='Set deadline'
-                    value={deadline}
-                    onChange={e => {
-                      setDeadline(e.target.value);
-                      props.updateTask(props.task.todoListId, props.task.id, {
-                        ...props.task,
-                        deadline: e.target.value,
-                      });
-                    }}
-                  />
-                </>
-              )}
-            </div>
-            <div
-              className={css.deleteTask}
-              onClick={() => props.deleteTask(task.todoListId, task.id)}
-            >
-              <DeleteIcon size={'17px'} />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={css.title}>{task.title}</div>
-            <div
-              className={css.deleteTask}
-              onClick={() => props.deleteTask(task.todoListId, task.id)}
-            >
-              <DeleteIcon size={'17px'} />
-            </div>
-          </>
-        )}
+      <div className={css.deleteTask} onClick={onTaskRemove}>
+        <DeleteIcon size={'17px'} />
       </div>
     </div>
   );
 };
 
-export default connect(null, { reorderTask, deleteTask, updateTask })(Task);
+export default Task;

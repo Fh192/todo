@@ -2,9 +2,9 @@ import {
   TaskResponse,
   TasksResponse,
   PostTodoListResponse,
-  TaskFormData,
   GetTasksResponse,
   ITodoList,
+  ITask,
 } from '../types/todoTypes';
 import instance from './instance';
 
@@ -17,7 +17,7 @@ const todo = {
 
   getTodoListTasks: async (
     todoListId: string,
-    pageSize: number = 10,
+    pageSize: number = 100,
     pageNumber: number = 1
   ) => {
     const response = await instance.get<GetTasksResponse>(
@@ -54,7 +54,7 @@ const todo = {
   updateTask: async (
     todoListId: string,
     taskId: string,
-    taskFormData: TaskFormData
+    taskFormData: ITask
   ) => {
     const response = await instance.put<TasksResponse>(
       `todo-lists/${todoListId}/tasks/${taskId}`,
@@ -67,7 +67,7 @@ const todo = {
   reorderTask: async (
     todoListId: string,
     taskId: string,
-    putAfterItemId: string
+    putAfterItemId: string | null
   ) => {
     await instance.put(`todo-lists/${todoListId}/tasks/${taskId}/reorder`, {
       putAfterItemId,
