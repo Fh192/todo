@@ -19,6 +19,7 @@ const App: React.FC = () => {
     (s: RootState) => s.todo.todoListsFetching
   );
   const authFetching = useSelector((s: RootState) => s.auth.authFetching);
+  const someError = useSelector((s: RootState) => s.todo.someError);
 
   useEffect(() => {
     dispatch(getAuthData());
@@ -44,7 +45,11 @@ const App: React.FC = () => {
             <>
               {todoListsFetching ? (
                 <div className={css.preloader}>
-                  <Preloader size='50px' />
+                  {someError ? (
+                    <span>Sorry, something went wrong</span>
+                  ) : (
+                    <Preloader size='50px' />
+                  )}
                 </div>
               ) : (
                 <>

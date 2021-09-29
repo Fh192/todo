@@ -32,3 +32,5 @@ export const toggleTodoListsFetching = createAction<boolean>(
 export const addNewTask = createAction<ITask>('todoActions/ADD_NEW_TASK');
 
 export const removeTask = createAction<string>('todoActions/REMOVE_TASK');
+
+export const toggleError = createAction<boolean>('todoActions/TOGGLE_ERROR')

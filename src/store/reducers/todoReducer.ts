@@ -15,6 +15,7 @@ interface TodoState {
   tasksFetching: boolean;
   taskUpdating: boolean;
   todoListsFetching: boolean;
+  someError: boolean;
 }
 
 const initialState: TodoState = {
@@ -24,6 +25,7 @@ const initialState: TodoState = {
   tasksFetching: true,
   taskUpdating: false,
   todoListsFetching: true,
+  someError: true,
 };
 
 const todoReducer = createReducer(initialState, b => {
@@ -61,6 +63,10 @@ const todoReducer = createReducer(initialState, b => {
   b.addCase(actions.toggleTasksFetching, (state, action) => {
     state.tasksFetching = action.payload;
   });
+
+  b.addCase(actions.toggleError, (state, action) => {
+    state.someError = action.payload;
+  });
 });
 
 export const getTodoLists = (): TodoThunk => async dispatch => {
@@ -70,6 +76,7 @@ export const getTodoLists = (): TodoThunk => async dispatch => {
   dispatch(actions.setTodoLists(todoLists));
 
   dispatch(actions.toggleTodoListsFetching(false));
+  dispatch(actions.toggleError(false));
 };
 
 export const getTodoListTasks =
