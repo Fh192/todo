@@ -146,7 +146,7 @@ const Header: React.FC = props => {
                 key={todo.id}
               >
                 <div className={css.todoTitle}>
-                  <NavLink to={`/todo/${todo.id}`} activeClassName={css.activeTodo}>
+                  <NavLink to={`/${todo.id}`} activeClassName={css.activeTodo}>
                     {todo.title}
                   </NavLink>
                 </div>

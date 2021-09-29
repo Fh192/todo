@@ -50,13 +50,13 @@ const App: React.FC = () => {
                 <>
                   <Header />
                   <Switch>
-                    <Route exact path='/todo'>
+                    <Route exact path='/'>
                       {todoLists.length > 0 && (
-                        <Redirect to={`/todo/${todoLists[0].id}`} />
+                        <Redirect to={`/${todoLists[0].id}`} />
                       )}
                     </Route>
 
-                    <Route path='/todo/:todoListId' component={TodoList} />
+                    <Route path='/:todoListId' component={TodoList} />
                   </Switch>
                 </>
               )}

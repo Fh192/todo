@@ -8,7 +8,7 @@ import store from './store/store';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename='/todo'>
       <Provider store={store}>
         <App />
       </Provider>
@@ -16,4 +16,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
